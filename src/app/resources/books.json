@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Head First Design Patterns",
+        "author": "Eric Freeman",
+        "editorial": "O'Reilly",
+        "year": 1997,
+        "category": "technology",
+        "available": "true"
+    },
+    {
+        "name": "Clean Code",
+        "author": "Robert C. Martin",
+        "editorial": "Prentice Hall",
+        "year": 1997,
+        "category": "technology",
+        "available": "false"
+    },
+    {
+        "name": "Clean Architecture",
+        "author": "Robert C. Martin",
+        "editorial": "Prentice Hall",
+        "year": 1999,
+        "category": "technology",
+        "available": "true"
+    }
+]
