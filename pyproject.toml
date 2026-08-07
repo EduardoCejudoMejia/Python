@@ -43,6 +43,8 @@ select = [
     "E", # pycodestyle
     "F", # Pyflakes
     "I", # Ordenar imports (reemplaza isort)
+    "B",
+    "UP"
 ]
 
 # Opcional: reglas que puedes ignorar
@@ -59,3 +61,10 @@ line-ending = "auto"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
