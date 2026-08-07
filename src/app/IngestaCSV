@@ -1,0 +1,193 @@
+import csv
+import json
+import logging
+
+# ---------------------------------------------------------
+# Configuración del logging
+# ---------------------------------------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+# Creamos un logger para nuestra aplicación.
+logger = logging.getLogger(__name__)
+
+
+class SalesReport:
+    """
+    Procesa un archivo CSV de ventas.
+
+    Responsabilidades:
+    - Leer ventas desde CSV.
+    - Calcular métricas.
+    - Exportar resultados a JSON.
+    - Registrar eventos mediante logging.
+    """
+
+    def __init__(self) -> None:
+        # Lista donde almacenaremos las ventas
+        # después de leerlas del CSV.
+        self.sales: list[dict] = []
+
+    # -----------------------------------------------------
+    # INGESTA DEL CSV
+    # -----------------------------------------------------
+    def load_csv(self, filename: str) -> None:
+        """
+        Lee las ventas desde un archivo CSV.
+        """
+
+        logger.info("Iniciando lectura del archivo: %s", filename)
+
+        try:
+            with open(filename, newline="", encoding="utf-8") as file:
+
+                # DictReader convierte cada fila del CSV
+                # en un diccionario.
+                reader = csv.DictReader(file)
+
+                for row in reader:
+
+                    try:
+                        # Convertimos los valores de texto
+                        # del CSV a números.
+                        sale = {
+                            "product": row["product"],
+                            "quantity": int(row["quantity"]),
+                            "price": float(row["price"]),
+                        }
+
+                        self.sales.append(sale)
+
+                    except (ValueError, TypeError) as error:
+                        # WARNING porque encontramos un registro
+                        # incorrecto, pero podemos continuar.
+                        logger.warning(
+                            "Registro inválido ignorado: %s",
+                            error,
+                        )
+
+            logger.info(
+                "CSV procesado correctamente. " "Ventas cargadas: %d",
+                len(self.sales),
+            )
+
+        except FileNotFoundError:
+            # ERROR porque el archivo ni siquiera existe.
+            logger.error(
+                "No se encontró el archivo: %s",
+                filename,
+            )
+
+            raise
+
+    # -----------------------------------------------------
+    # MÉTRICAS
+    # -----------------------------------------------------
+    def calculate_metrics(self) -> dict:
+        """
+        Calcula métricas básicas de las ventas.
+        """
+
+        logger.info("Calculando métricas...")
+
+        # Si no existen ventas, mostramos un warning.
+        if not self.sales:
+            logger.warning("No existen ventas para procesar.")
+
+            return {
+                "total_products": 0,
+                "total_units": 0,
+                "total_revenue": 0,
+            }
+
+        # Cantidad total de unidades vendidas.
+        total_units = sum(sale["quantity"] for sale in self.sales)
+
+        # Ingresos totales.
+        total_revenue = sum(sale["quantity"] * sale["price"] for sale in self.sales)
+
+        metrics = {
+            "total_products": len(self.sales),
+            "total_units": total_units,
+            "total_revenue": total_revenue,
+        }
+
+        logger.info("Métricas calculadas correctamente.")
+
+        return metrics
+
+    # -----------------------------------------------------
+    # EXPORTACIÓN A JSON
+    # -----------------------------------------------------
+    def export_json(
+        self,
+        filename: str,
+        metrics: dict,
+    ) -> None:
+        """
+        Exporta las métricas a un archivo JSON.
+        """
+
+        logger.info(
+            "Exportando métricas a: %s",
+            filename,
+        )
+
+        try:
+            with open(
+                filename,
+                "w",
+                encoding="utf-8",
+            ) as file:
+
+                json.dump(
+                    metrics,
+                    file,
+                    indent=4,
+                )
+
+            logger.info("JSON generado correctamente.")
+
+        except OSError as error:
+            logger.error(
+                "Error al crear el archivo JSON: %s",
+                error,
+            )
+
+            raise
+
+
+# =========================================================
+# PROGRAMA PRINCIPAL
+# =========================================================
+
+
+def main() -> None:
+
+    # Creamos nuestro objeto.
+    report = SalesReport()
+
+    # 1. Leer CSV
+    report.load_csv(
+        "/Users/cejudo/Documents/Cursos/Python/Axity/Python/src/app/resources/sales.csv"
+    )
+
+    # 2. Calcular métricas
+    metrics = report.calculate_metrics()
+
+    # Mostramos las métricas.
+    print("\nMétricas:")
+    print(metrics)
+
+    # 3. Exportar métricas a JSON
+    report.export_json(
+        "sales_report.json",
+        metrics,
+    )
+
+
+# Punto de entrada del programa.
+if __name__ == "__main__":
+    main()
