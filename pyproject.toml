@@ -22,7 +22,9 @@ dev = [
     "ruff (>=0.16.1,<0.17.0)",
     "pytest (>=9.1.1,<10.0.0)",
     "pre-commit (>=4.6.1,<5.0.0)",
-    "alembic (>=1.19.1,<2.0.0)"
+    "alembic (>=1.19.1,<2.0.0)",
+    "hypothesis (>=6.0.0,<7.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)"
 ]
 
 # ----------------------------
@@ -67,6 +69,17 @@ line-ending = "auto"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+    "propiedades: pruebas basadas en propiedades con Hypothesis"
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app.lab_tdd_cars"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
 
 [tool.isort]
 profile = "black"
