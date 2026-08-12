@@ -7,7 +7,7 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["httpx (>=0.28.1,<0.29.0)", "sqlalchemy (>=2.0.52,<3.0.0)"]
+dependencies = ["httpx (>=0.28.1,<0.29.0)", "sqlalchemy (>=2.0.52,<3.0.0)", "fastapi (>=0.141.1,<0.142.0)", "uvicorn[standard] (>=0.52.1,<0.53.0)"]
 
 [tool.poetry]
 packages = [{ include = "python", from = "src" }]
@@ -50,6 +50,11 @@ select = [
 
 # Opcional: reglas que puedes ignorar
 ignore = []
+
+# FastAPI declara formularios e inyección de dependencias mediante defaults.
+[tool.ruff.lint.per-file-ignores]
+"src/app/JWT.py" = ["B008"]
+"src/app/lab_api_cars/routers/*.py" = ["B008"]
 
 [tool.ruff.format]
 quote-style = "double"
