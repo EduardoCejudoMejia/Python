@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package coches.ordenes;
+
+service OrdenesService {
+  rpc CrearOrden (CrearOrdenRequest) returns (OrdenResponse);
+}
+
+message CrearOrdenRequest {
+  string cliente = 1;
+  string modelo = 2;
+  double precio = 3;
+}
+
+message OrdenResponse {
+  string id = 1;
+  string cliente = 2;
+  string modelo = 3;
+  double precio = 4;
+}
+
+message OrderCreated {
+  string orden_id = 1;
+  string modelo = 2;
+}
